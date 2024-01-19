@@ -93,7 +93,7 @@ def are_files_equal(file1, file2):
 
 if __name__ == "__main__":
 
-    input_file = "Romeo-and-Juliet.txt"
+    input_file = "micha\OneDrive\Dokumenty\Python-2023-2024\Romeo-and-Juliet.txt"
 
     LZWcompress(input_file)
     LZWdecompress("compressed.bin")
