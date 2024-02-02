@@ -1,6 +1,10 @@
 import filecmp
+import tkinter as tk
+from tkinter import filedialog
 
 def LZWcompress(input_file):
+    global original_file
+    original_file = input_file
     dict_size = 4096
     dictionary = {chr(i): i for i in range(256)}
 
@@ -91,15 +95,37 @@ def LZWdecompress(input_file):
 def are_files_equal(file1, file2):
     return filecmp.cmp(file1, file2)
 
-if __name__ == "__main__":
+def load_file_for_compression():
+    filename = filedialog.askopenfilename()
+    LZWcompress(filename)
+    tk.messagebox.showinfo("Powodzenie", "Plik został pomyślnie skompresowany.")
 
-    input_file = "Romeo-and-Juliet.txt"
 
-    LZWcompress(input_file)
-    LZWdecompress("compressed.bin")
-
-    if are_files_equal(input_file, "decompressed.txt"):
+def load_file_for_decompression():
+    global original_file
+    filename = filedialog.askopenfilename()
+    LZWdecompress(filename)
+    print(filename)
+    if are_files_equal(original_file, "decompressed.txt"):
         print("Pliki są identyczne po kompresji i dekompresji.")
+        tk.messagebox.showinfo("Powodzenie", "Plik został pomyślnie zdekompresowany. Pliki są identyczne.")
     else:
         print("Pliki różnią się po kompresji i dekompresji.")
+        tk.messagebox.showinfo("Niepowodzenie", "Plik nie został pomyślnie zdekompresowany. Pliki się różnią.")
     print("---------------------------------------------")
+
+if __name__ == "__main__":
+
+    root = tk.Tk()
+    root.title("Kompresja LZW")
+    root.geometry("300x100")
+
+    compress_button = tk.Button(root, text="Wczytaj plik do kompresji", command=load_file_for_compression)
+    compress_button.pack()
+    compress_button.place(relx=0.5, rely=0.3, anchor="center")
+
+    decompress_button = tk.Button(root, text="Wczytaj plik do dekompresji", command=load_file_for_decompression)
+    decompress_button.pack()
+    decompress_button.place(relx=0.5, rely=0.7, anchor="center")
+
+    root.mainloop()
