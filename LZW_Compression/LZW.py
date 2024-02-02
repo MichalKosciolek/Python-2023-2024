@@ -1,6 +1,7 @@
 import filecmp
 import tkinter as tk
 from tkinter import filedialog
+import os
 
 def LZWcompress(input_file):
     global original_file
@@ -41,9 +42,11 @@ def LZWcompress(input_file):
     compressed_data.append(dictionary[current])
 
     compressed_file_size = len(compressed_data) * 2
-    with open("compressed.bin", 'wb') as output_file:
+    dir_path = os.path.dirname(os.path.realpath(original_file))
+    output_file = os.path.join(dir_path, 'compressed.bin')
+    with open(output_file, 'wb') as f:
         for number in compressed_data:
-            output_file.write(number.to_bytes(2, byteorder='big'))
+            f.write(number.to_bytes(2, byteorder='big'))
 
     input_file_size = len(data)
     print("---------------------------------------------")
@@ -85,8 +88,10 @@ def LZWdecompress(input_file):
         code += 1
         output_data.append(current)
 
-    with open("decompressed.txt", 'w') as output_file:
-        output_file.write(''.join(map(str, output_data)))
+    dir_path = os.path.dirname(os.path.realpath(original_file))
+    output_file = os.path.join(dir_path, 'decompressed.txt')
+    with open(output_file, 'w') as f:
+        f.write(''.join(map(str, output_data)))
 
     print("---------------------------------------------")
     print("Dekompresja udana.")
@@ -105,8 +110,9 @@ def load_file_for_decompression():
     global original_file
     filename = filedialog.askopenfilename()
     LZWdecompress(filename)
-    print(filename)
-    if are_files_equal(original_file, "decompressed.txt"):
+    dir_path = os.path.dirname(os.path.realpath(original_file))
+    output_file = os.path.join(dir_path, 'decompressed.txt')
+    if are_files_equal(original_file, output_file):
         print("Pliki są identyczne po kompresji i dekompresji.")
         tk.messagebox.showinfo("Powodzenie", "Plik został pomyślnie zdekompresowany. Pliki są identyczne.")
     else:
